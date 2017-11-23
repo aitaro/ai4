@@ -1,5 +1,5 @@
 #! ruby -Ku
-$size = 4
+$size = 6
 class Chess
   def initialize(chess_piece, map = 0)
     @chess_piece = chess_piece # 0:ナイト, 1:ビショップ, 2:キング
@@ -206,19 +206,18 @@ class Try_chess
     @count = 0
     @max_count = 0
     @size = $size
-    @limit = [[],[],[],[5,3,4],[8,8,8],[13,1,1],[18,1,1],[25,1,1],[32,14,16]][@size][@chess_piece]
+    @limit = 0
   end
 
   def try(n = 0, c = Chess.new(@chess_piece))
-    puts "-------------------"
-    c.mapping
+
     if c.count_piece + c.count_ableplace(n) < @limit
       return
     end
     if n == @size**2 then
       if c.count_piece >= @limit
-#        puts "-------------------"
-#        c.mapping
+        puts "-------------------"
+        c.mapping
         @count += 1
       end
       return
@@ -236,8 +235,16 @@ class Try_chess
   def count
     puts "異なる配置の仕方は対称性、鏡像を含めて#{@count}通りです。"
   end
+
+  def try_search
+    (@size**2).downto(0) do |i|
+      @limit = i
+      try
+      if @count != 0 then return end
+    end
+  end
 end
 
 c = Try_chess.new(0)
-c.try
+c.try_search
 c.count
