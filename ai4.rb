@@ -1,4 +1,5 @@
-$size = 3
+#! ruby -Ku
+$size = 4
 class Chess
   def initialize(chess_piece, map = 0)
     @chess_piece = chess_piece # 0:ナイト, 1:ビショップ, 2:キング
@@ -141,8 +142,8 @@ class Chess
     return @map.flatten.count(2)
   end
 
-  def count_ableplace
-    return @map.flatten.count(0)
+  def count_ableplace(n)
+    return @map.flatten[n .. @size**2].count(0)
   end
 
   def try_all
@@ -201,22 +202,25 @@ end
 
 class Try_chess
   def initialize(chess_piece)
+    @chess_piece = chess_piece
     @count = 0
     @max_count = 0
     @size = $size
-    @limit = 5
-    @chess_piece = chess_piece
+    @limit = [[],[],[],[5,3,4],[8,8,8],[13,1,1],[18,1,1],[25,1,1],[32,14,16]][@size][@chess_piece]
   end
 
   def try(n = 0, c = Chess.new(@chess_piece))
-    if c.count_piece + c.count_ableplace < @limit
+    puts "-------------------"
+    c.mapping
+    if c.count_piece + c.count_ableplace(n) < @limit
       return
     end
     if n == @size**2 then
-#      if c.count_piece >= @limit
-        puts "-------------------"
-        c.mapping
-#      end
+      if c.count_piece >= @limit
+#        puts "-------------------"
+#        c.mapping
+        @count += 1
+      end
       return
     end
 
@@ -228,7 +232,12 @@ class Try_chess
     end
     try(n+1,c)
   end
+
+  def count
+    puts "異なる配置の仕方は対称性、鏡像を含めて#{@count}通りです。"
+  end
 end
 
-c = Try_chess.new(1)
+c = Try_chess.new(0)
 c.try
+c.count
