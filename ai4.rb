@@ -1,4 +1,4 @@
-$size = 8
+$size = 3
 class Chess
   def initialize(chess_piece, map = 0)
     @chess_piece = chess_piece # 0:ナイト, 1:ビショップ, 2:キング
@@ -29,7 +29,7 @@ class Chess
     end
     place_new = []
     place.length.times do |i|
-      if (place[i][0] >= 0 && place[i][0] <= 7) && (place[i][1] >= 0 && place[i][1] <= 7)
+      if (place[i][0] >= 0 && place[i][0] <= @size - 1) && (place[i][1] >= 0 && place[i][1] <= @size - 1)
         place_new.push(place[i])
       end
     end
@@ -55,6 +55,13 @@ class Chess
 
   # mapの更新
   def map_update
+    @size.times do |i|
+      @size.times do |j|
+        if @map[i][j] == 1
+          @map[i][j] = 0
+        end
+      end
+    end
     @size.times do |i|
       @size.times do |j|
         if @map[i][j] != 2 then next end
@@ -139,9 +146,6 @@ class Chess
     return @map.flatten.count(0)
   end
 
-
-
-
   def try_all
     loop do
       try_put
@@ -175,7 +179,6 @@ class Chess
     return ans
   end
 
-
   def try(n = 0)
     if n==@size**2 then
       puts "-------------------"
@@ -205,8 +208,11 @@ class Try_chess
   end
 
   def try(n = 0, c = Chess.new(0))
+#    puts "-------------------"
+#    c.mapping
     if n == @size**2 then
-      if c.count_piece > 31
+  #    puts "end"
+      if c.count_piece > 3
         puts "-------------------"
         c.mapping
       end
