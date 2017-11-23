@@ -99,13 +99,12 @@ class Chess
   end
 
   def exist_set?(s,t)
+
     if s==0&&t==0 then return already_puted?(0,0) end
 
     bool = false
 
     @searched_map.length.times do |i|
-
-
       search = one_zero(@searched_map[i].flatten[0..(s*@size+t)])
       now = one_zero(@map.flatten[0..(s*@size+t-1)].push(2))
       bool = bool || search == now
@@ -201,21 +200,23 @@ class Chess
 end
 
 class Try_chess
-  def initialize
+  def initialize(chess_piece)
     @count = 0
     @max_count = 0
     @size = $size
+    @limit = 5
+    @chess_piece = chess_piece
   end
 
-  def try(n = 0, c = Chess.new(0))
-#    puts "-------------------"
-#    c.mapping
+  def try(n = 0, c = Chess.new(@chess_piece))
+    if c.count_piece + c.count_ableplace < @limit
+      return
+    end
     if n == @size**2 then
-  #    puts "end"
-      if c.count_piece > 3
+#      if c.count_piece >= @limit
         puts "-------------------"
         c.mapping
-      end
+#      end
       return
     end
 
@@ -225,12 +226,9 @@ class Try_chess
       c.map[n/@size][n% @size] = 0
       c.map_update
     end
-    if c.count_piece + c.count_ableplace < 5
-    #  return
-    end
     try(n+1,c)
   end
 end
 
-c = Try_chess.new
+c = Try_chess.new(1)
 c.try
